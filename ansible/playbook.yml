@@ -1,0 +1,30 @@
+# ansible/playbook.yml
+- name: Preparar ambiente DevOps e instalar App
+  hosts: localhost
+  become: true # Para ejecutar como sudo sin password como pide el reto
+  
+  tasks:
+    - name: Actualizar repositorios
+      apt:
+        update_cache: yes
+
+    - name: Instalar Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Instalar Minikube y Kubectl
+      shell: |
+        curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        install minikube-linux-amd64 /usr/local/bin/minikube
+        snap install kubectl --classic
+
+    - name: Iniciar Minikube
+      shell: minikube start --driver=docker
+      become_user: "{{ ansible_user }}" # El usuario actual, no root
+
+    - name: Ejecutar Terraform
+      shell: |
+        cd ../terraform
+        terraform init
+        terraform apply -auto-approve

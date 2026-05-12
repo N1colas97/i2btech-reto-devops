@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.terraform/
+terraform.tfstate*
+.devcontainer/
+nginx/certs/server.key
+nginx/certs/server.crt

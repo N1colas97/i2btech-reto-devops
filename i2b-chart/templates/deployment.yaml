@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "i2b-chart.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: i2b-app
+  template:
+    metadata:
+      labels:
+        app: i2b-app
+    spec:
+      containers:
+        - name: i2b-app
+          image: i2b-app:latest  # Usaremos la imagen que buildeaste
+          imagePullPolicy: Never # Importante para que Minikube use tu imagen local
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: log-volume
+              mountPath: /app/logs # Ruta interna de la app
+      volumes:
+        - name: log-volume
+          hostPath:
+            path: /var/log/i2b-app # Ruta en la máquina real (como pide el reto)
+            type: DirectoryOrCreate
